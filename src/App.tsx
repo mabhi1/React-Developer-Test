@@ -1,24 +1,50 @@
-import Feed from "./components/Feed";
 import Header from "./components/Header";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Signin from "./components/Signin";
-import Signup from "./components/Signup";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import { getAuth } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { useAppDispatch } from "./store/hooks";
+import { updateUser } from "./store/slices/userSlice";
+import PageNotFound from "./components/PageNotFound";
+import Feed from "./components/Feed";
+import Toast from "./ui/Toast";
 
-const App = () => {
+function App() {
+  const [loading, setLoading] = useState(true);
+  const auth = getAuth();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      setLoading(false);
+      dispatch(
+        updateUser({ name: user?.displayName || "", email: user?.email || "" })
+      );
+    });
+  }, []);
   return (
-    <div className="font-body min-h-screen flex text-base">
-      <Router>
-        <Header />
-        <div className="flex-1">
-          <Routes>
-            <Route path="/" element={<Feed />} />
-            <Route path="/signin" element={<Signin />} />
-            <Route path="/signup" element={<Signup />} />
-          </Routes>
-        </div>
-      </Router>
-    </div>
+    <Router>
+      <main className="font-body bg-slate-50 min-h-screen text-slate-900 flex flex-col text-base">
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
+          <>
+            <Header />
+            <div className="flex-1 flex flex-col">
+              <Routes>
+                <Route path="/" element={<Feed />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="*" element={<PageNotFound />} />
+              </Routes>
+              <Toast />
+            </div>
+          </>
+        )}
+      </main>
+    </Router>
   );
-};
+}
 
 export default App;
