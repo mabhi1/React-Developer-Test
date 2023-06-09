@@ -9,6 +9,8 @@ import { updateUser } from "./store/slices/userSlice";
 import PageNotFound from "./components/PageNotFound";
 import Feed from "./components/Feed";
 import Toast from "./ui/Toast";
+import PublicRoute from "./components/routeHandlers/PublicRoutes";
+import PrivateRoute from "./components/routeHandlers/PrivateRoutes";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -19,7 +21,10 @@ function App() {
     auth.onAuthStateChanged((user) => {
       setLoading(false);
       dispatch(
-        updateUser({ name: user?.displayName || "", email: user?.email || "" })
+        updateUser({
+          name: user!.displayName,
+          email: user!.email,
+        })
       );
     });
   }, []);
@@ -33,9 +38,13 @@ function App() {
             <Header />
             <div className="flex-1 flex flex-col">
               <Routes>
-                <Route path="/" element={<Feed />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
+                <Route element={<PrivateRoute />}>
+                  <Route path="/" element={<Feed />} />
+                </Route>
+                <Route element={<PublicRoute />}>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                </Route>
                 <Route path="*" element={<PageNotFound />} />
               </Routes>
               <Toast />

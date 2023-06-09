@@ -8,7 +8,6 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
-  sendEmailVerification,
   setPersistence,
   browserSessionPersistence,
   browserLocalPersistence,
@@ -28,23 +27,11 @@ function createErrorMessage(error: any) {
     .join(" ");
 }
 
-async function createUser(
-  email: string,
-  password: string,
-  displayName: string
-) {
+async function createUser(email: string, password: string, displayName: string) {
   try {
     await createUserWithEmailAndPassword(auth, email, password);
     if (auth.currentUser) {
-      await updateProfile(auth.currentUser, {
-        displayName: displayName
-          .split(" ")
-          .map((word) => {
-            return word.charAt(0).toUpperCase() + word.slice(1);
-          })
-          .join(" "),
-      });
-      await sendEmailVerification(auth.currentUser);
+      await updateProfile(auth.currentUser, { displayName: displayName });
     }
   } catch (error) {
     throw createErrorMessage(error);
@@ -107,20 +94,10 @@ async function changePassword(password: string) {
 
 async function updateName(name: string) {
   try {
-    if (auth.currentUser)
-      await updateProfile(auth.currentUser, { displayName: name });
+    if (auth.currentUser) await updateProfile(auth.currentUser, { displayName: name });
   } catch (error) {
     throw createErrorMessage(error);
   }
 }
 
-export {
-  createUser,
-  dosignOut,
-  passwordReset,
-  signIn,
-  changePassword,
-  socialSignIn,
-  updateName,
-  rememberSignIn,
-};
+export { createUser, dosignOut, passwordReset, signIn, changePassword, socialSignIn, updateName, rememberSignIn };

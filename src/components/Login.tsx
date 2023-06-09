@@ -1,11 +1,6 @@
 import Button from "../ui/Button";
-import {
-  passwordReset,
-  rememberSignIn,
-  signIn,
-  socialSignIn,
-} from "../firebase/firebaseFunctions";
-import React, { useEffect, useState } from "react";
+import { passwordReset, rememberSignIn, signIn, socialSignIn } from "../firebase/firebaseFunctions";
+import React, { useState } from "react";
 import Input from "../ui/Input";
 import { showToast } from "../utils/handleToast";
 import Spinner from "../ui/Spinner";
@@ -17,10 +12,6 @@ const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    const emailInput = document.getElementById("email");
-    if (emailInput) emailInput.focus();
-  }, []);
 
   const handleReset = async () => {
     setLoading(true);
@@ -59,6 +50,7 @@ const Login = () => {
     try {
       if (checked) await rememberSignIn(email, password);
       else await signIn(email, password);
+      navigate("/");
     } catch (error: any) {
       if (error === "Wrong Password") error = "User Not Found";
       showToast("error", error);
@@ -66,10 +58,7 @@ const Login = () => {
     setLoading(false);
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    labelName: string
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, labelName: string) => {
     const value = e.target.value;
     let label = document.getElementById(labelName);
     if (value.length > 0) {
@@ -82,21 +71,11 @@ const Login = () => {
   return (
     <div className="flex-1 flex flex-col lg:flex-row items-center gap-5 justify-center">
       <div className="w-1/2 lg:w-1/4 justify-center flex">
-        <img
-          src="/login-img.webp"
-          width={420}
-          height={494}
-          alt="Login"
-          className="w-auto h-auto"
-        />
+        <img src="/register-img.png" width={420} height={494} alt="Login" className="w-auto h-auto" />
       </div>
       <div className="flex flex-col gap-3 md:w-1/2 lg:w-1/3 lg:p-8">
         <h1 className="text-lg">Login</h1>
-        <form
-          className="flex flex-col gap-3"
-          autoComplete="off"
-          onSubmit={handleLogin}
-        >
+        <form className="flex flex-col gap-3" autoComplete="off" onSubmit={handleLogin}>
           <div className="relative flex-1">
             <Input
               wide="full"
@@ -107,6 +86,7 @@ const Login = () => {
               className="peer"
               autoComplete="false"
               formNoValidate
+              autoFocus
             />
             <label
               id="emailLabel"
@@ -148,13 +128,7 @@ const Login = () => {
           </div>
           <div className="flex justify-between">
             <span className="flex gap-1 items-center">
-              <Input
-                type="checkbox"
-                id="remember"
-                name="remember"
-                value="remember"
-                className="hover:cursor-pointer"
-              />
+              <Input type="checkbox" id="remember" name="remember" value="remember" className="hover:cursor-pointer" />
               <label htmlFor="remember" className="cursor-pointer">
                 Remember Me
               </label>
@@ -190,7 +164,9 @@ const Login = () => {
           <div className="flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-slate-300 after:mt-0.5 after:flex-1 after:border-t after:border-slate-300">
             <p className="mx-4 mb-0 text-center">OR</p>
           </div>
-          <Button variant="disabled">Register</Button>
+          <Button variant="outline" onClick={() => navigate("/register")} type="button">
+            Register
+          </Button>
         </form>
       </div>
     </div>
