@@ -1,16 +1,17 @@
 import Header from "./components/Header";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Login from "./components/Login";
-import Register from "./components/Register";
+import Login from "./components/public/Login";
+import Register from "./components/public/Register";
 import { getAuth } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "./store/hooks";
 import { updateUser } from "./store/slices/userSlice";
 import PageNotFound from "./components/PageNotFound";
-import Feed from "./components/Feed";
 import Toast from "./ui/Toast";
 import PublicRoute from "./components/routeHandlers/PublicRoutes";
 import PrivateRoute from "./components/routeHandlers/PrivateRoutes";
+import Profile from "./components/private/Profile";
+import Posts from "./components/private/Posts";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -19,13 +20,16 @@ function App() {
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
-      setLoading(false);
+      console.log(user);
       dispatch(
         updateUser({
-          name: user!.displayName,
-          email: user!.email,
+          uid: user ? user.uid : null,
+          name: user ? user.displayName : null,
+          email: user ? user.email : null,
+          photoURL: user ? user.photoURL : null,
         })
       );
+      setLoading(false);
     });
   }, []);
   return (
@@ -36,10 +40,11 @@ function App() {
         ) : (
           <>
             <Header />
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col p-10">
               <Routes>
                 <Route element={<PrivateRoute />}>
-                  <Route path="/" element={<Feed />} />
+                  <Route path="/" element={<Posts />} />
+                  <Route path="/profile" element={<Profile />} />
                 </Route>
                 <Route element={<PublicRoute />}>
                   <Route path="/login" element={<Login />} />

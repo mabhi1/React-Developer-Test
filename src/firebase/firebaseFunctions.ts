@@ -11,6 +11,8 @@ import {
   setPersistence,
   browserSessionPersistence,
   browserLocalPersistence,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
 } from "firebase/auth";
 import "./firebase";
 
@@ -84,10 +86,27 @@ async function dosignOut() {
   }
 }
 
-async function changePassword(password: string) {
+async function changePassword(email: string, oldPassword: string, newPassword: string) {
   try {
-    if (auth.currentUser) await updatePassword(auth.currentUser, password);
+    if (auth.currentUser) {
+      const credential = EmailAuthProvider.credential(email, oldPassword);
+      const authenticated = await reauthenticateWithCredential(auth.currentUser, credential);
+      if (authenticated) {
+        await updatePassword(auth.currentUser, newPassword);
+      }
+    }
   } catch (error) {
+    throw createErrorMessage(error);
+  }
+}
+
+async function updatePhoto(photoUrl: string) {
+  if (!auth.currentUser) return;
+  try {
+    await updateProfile(auth.currentUser, {
+      photoURL: photoUrl,
+    });
+  } catch (error: any) {
     throw createErrorMessage(error);
   }
 }
@@ -100,4 +119,14 @@ async function updateName(name: string) {
   }
 }
 
-export { createUser, dosignOut, passwordReset, signIn, changePassword, socialSignIn, updateName, rememberSignIn };
+export {
+  createUser,
+  dosignOut,
+  passwordReset,
+  signIn,
+  changePassword,
+  socialSignIn,
+  updateName,
+  rememberSignIn,
+  updatePhoto,
+};

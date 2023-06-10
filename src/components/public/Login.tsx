@@ -1,9 +1,9 @@
-import Button from "../ui/Button";
-import { passwordReset, rememberSignIn, signIn, socialSignIn } from "../firebase/firebaseFunctions";
+import Button from "../../ui/Button";
+import { passwordReset, rememberSignIn, signIn, socialSignIn } from "../../firebase/firebaseFunctions";
 import React, { useState } from "react";
-import Input from "../ui/Input";
-import { showToast } from "../utils/handleToast";
-import Spinner from "../ui/Spinner";
+import Input from "../../ui/Input";
+import { showToast } from "../../utils/handleToast";
+import Spinner from "../../ui/Spinner";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
