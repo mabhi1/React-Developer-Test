@@ -1,6 +1,6 @@
 import { useAppSelector, useAppDispatch } from "../../store/hooks";
 import Button from "../../ui/Button";
-import { dosignOut } from "../../firebase/firebaseFunctions";
+import { dosignOut } from "../../firebase/authFunctions";
 import { useNavigate } from "react-router-dom";
 import ChangeName from "./user/ChangeName";
 import { updateUser } from "../../store/slices/userSlice";

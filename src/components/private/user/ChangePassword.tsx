@@ -3,7 +3,7 @@ import Input from "../../../ui/Input";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import Button from "../../../ui/Button";
 import { showToast } from "../../../utils/handleToast";
-import { changePassword } from "../../../firebase/firebaseFunctions";
+import { changePassword } from "../../../firebase/authFunctions";
 import Spinner from "../../../ui/Spinner";
 import { User } from "../../../utils/types";
 

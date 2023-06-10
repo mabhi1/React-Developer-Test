@@ -3,7 +3,7 @@ import Button from "../../../ui/Button";
 import Input from "../../../ui/Input";
 import { useState } from "react";
 import { showToast } from "../../../utils/handleToast";
-import { updatePhoto } from "../../../firebase/firebaseFunctions";
+import { updatePhoto } from "../../../firebase/authFunctions";
 import { User } from "../../../utils/types";
 
 type Props = {

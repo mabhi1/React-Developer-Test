@@ -1,6 +1,6 @@
 import Input from "../../../ui/Input";
 import Button from "../../../ui/Button";
-import { updateName } from "../../../firebase/firebaseFunctions";
+import { updateName } from "../../../firebase/authFunctions";
 import { showToast } from "../../../utils/handleToast";
 import { useState } from "react";
 import { User } from "../../../utils/types";

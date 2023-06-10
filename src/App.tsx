@@ -11,7 +11,8 @@ import Toast from "./ui/Toast";
 import PublicRoute from "./components/routeHandlers/PublicRoutes";
 import PrivateRoute from "./components/routeHandlers/PrivateRoutes";
 import Profile from "./components/private/Profile";
-import Posts from "./components/private/Posts";
+import Posts from "./components/private/post/Posts";
+import CreatePost from "./components/private/CreatePost";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -20,7 +21,6 @@ function App() {
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
-      console.log(user);
       dispatch(
         updateUser({
           uid: user ? user.uid : null,
@@ -40,11 +40,12 @@ function App() {
         ) : (
           <>
             <Header />
-            <div className="flex-1 flex flex-col p-10">
+            <div className="flex-1 flex flex-col p-5">
               <Routes>
                 <Route element={<PrivateRoute />}>
                   <Route path="/" element={<Posts />} />
                   <Route path="/profile" element={<Profile />} />
+                  <Route path="/create" element={<CreatePost />} />
                 </Route>
                 <Route element={<PublicRoute />}>
                   <Route path="/login" element={<Login />} />
