@@ -1,17 +1,16 @@
-import { useAppSelector, useAppDispatch } from "../../store/hooks";
-import Button from "../../ui/Button";
-import { dosignOut } from "../../firebase/authFunctions";
+import { useAppSelector, useAppDispatch } from "../../../store/hooks";
+import Button from "../../../ui/Button";
+import { dosignOut } from "../../../firebase/authFunctions";
 import { useNavigate } from "react-router-dom";
-import ChangeName from "./user/ChangeName";
-import { updateUser } from "../../store/slices/userSlice";
-import { User } from "../../utils/types";
-import ChangePassword from "./user/ChangePassword";
-import ChangePhoto from "./user/ChangePhoto";
+import ChangeName from "./ChangeName";
+import { updateUser } from "../../../store/slices/userSlice";
+import { UserStateType } from "../../../utils/types";
+import ChangePassword from "./ChangePassword";
+import ChangePhoto from "./ChangePhoto";
 
 const Profile = () => {
   const user = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
-  console.log(user);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -23,11 +22,11 @@ const Profile = () => {
     }
   };
 
-  const setUser = ({ uid, name, photoURL, email }: User) => {
+  const setUser = ({ uid, displayName, photoURL, email }: UserStateType) => {
     dispatch(
       updateUser({
         uid,
-        name,
+        displayName,
         photoURL,
         email,
       })
@@ -51,14 +50,14 @@ const Profile = () => {
           <img src="/profile.png" width={100} height={100} alt={user.email || ""} />
         )}
         <span className="flex flex-col md:flex-row gap-2 md:gap-5">
-          <Button>Your Feeds</Button>
+          <Button onClick={() => navigate("/myposts")}>Your Posts</Button>
           <Button variant={"destructive"} onClick={handleLogout}>
             Logout
           </Button>
         </span>
       </div>
       <div className="flex flex-col gap-1">
-        <div>Name : {user.name}</div>
+        <div>Name : {user.displayName}</div>
         <div>Email : {user.email}</div>
       </div>
       <ChangeName user={user} setUser={setUser} />

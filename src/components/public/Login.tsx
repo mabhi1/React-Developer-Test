@@ -154,7 +154,9 @@ const Login = () => {
               type="button"
               className="p-2 pl-10 border-t-2 shadow rounded w-full transition-all duration-200 cursor-pointer hover:bg-slate-100 bg-white focus:bg-slate-100 text-slate-900"
               onClick={async () => {
+                setLoading(true);
                 await socialSignIn("google");
+                setLoading(false);
                 navigate("/");
               }}
             >

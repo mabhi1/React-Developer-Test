@@ -8,7 +8,7 @@ import Button from "../ui/Button";
 
 const authMenuItems = [
   {
-    label: "Posts",
+    label: "Feed",
     path: "/",
     icon: <MdOutlineFeed />,
   },
@@ -37,7 +37,7 @@ const Header = () => {
   const user = useAppSelector((state) => state.user);
   const handleLogout = async () => {
     await dosignOut();
-    dispatch(updateUser({ uid: null, name: null, email: null, photoURL: null }));
+    dispatch(updateUser({ uid: null, displayName: null, email: null, photoURL: null }));
     navigate("/login");
   };
 
@@ -46,7 +46,7 @@ const Header = () => {
       <div className="overflow-hidden flex sticky top-0 bg-slate-50/80 z-40 backdrop-blur justify-between py-3 px-10 items-center border-b border-slate-300">
         <h1 className="text-lg">Socialize</h1>
         <nav className="flex gap-8 items-center">
-          <div className="hidden md:flex justify-center items-center md:min-h-full">Welcome, {user.name}</div>
+          <div className="hidden md:flex justify-center items-center md:min-h-full">Welcome, {user.displayName}</div>
 
           {authMenuItems.map((item) => (
             <Link

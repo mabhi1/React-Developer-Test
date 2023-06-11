@@ -5,10 +5,10 @@ import Button from "../../../ui/Button";
 import { showToast } from "../../../utils/handleToast";
 import { changePassword } from "../../../firebase/authFunctions";
 import Spinner from "../../../ui/Spinner";
-import { User } from "../../../utils/types";
+import { UserStateType } from "../../../utils/types";
 
 type Props = {
-  user: User;
+  user: UserStateType;
 };
 const ChangePassword = ({ user }: Props) => {
   const [loading, setLoading] = useState(false);

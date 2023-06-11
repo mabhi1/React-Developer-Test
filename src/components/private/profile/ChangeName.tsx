@@ -3,11 +3,11 @@ import Button from "../../../ui/Button";
 import { updateName } from "../../../firebase/authFunctions";
 import { showToast } from "../../../utils/handleToast";
 import { useState } from "react";
-import { User } from "../../../utils/types";
+import { UserStateType } from "../../../utils/types";
 
 type Props = {
-  user: User;
-  setUser: ({ name, photoURL, email }: User) => void;
+  user: UserStateType;
+  setUser: ({ displayName, photoURL, email }: UserStateType) => void;
 };
 const ChangeName = ({ user, setUser }: Props) => {
   const [loading, setLoading] = useState(false);
@@ -31,7 +31,7 @@ const ChangeName = ({ user, setUser }: Props) => {
     try {
       await updateName(name);
       showToast("success", "Name updated successfully");
-      setUser({ ...user, name });
+      setUser({ ...user, displayName: name });
       setName("");
     } catch (error) {
       showToast("error", "Error updating name");

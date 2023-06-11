@@ -1,53 +1,52 @@
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import { getDownloadURL } from "firebase/storage";
 import Button from "../../../ui/Button";
 import Input from "../../../ui/Input";
 import { useState } from "react";
 import { showToast } from "../../../utils/handleToast";
 import { updatePhoto } from "../../../firebase/authFunctions";
-import { User } from "../../../utils/types";
+import { UserStateType } from "../../../utils/types";
+import { uploadFile } from "../../../firebase/storageFunctions";
 
 type Props = {
-  user: User;
-  setUser: ({ uid, name, photoURL, email }: User) => void;
+  user: UserStateType;
+  setUser: ({ uid, displayName, photoURL, email }: UserStateType) => void;
 };
 const ChangeProfile = ({ user, setUser }: Props) => {
-  const storage = getStorage();
   const [loading, setLoading] = useState(false);
 
   const handleFileSubmit = async (e: React.FormEvent) => {
     if (loading) return;
+    if (!user.uid) return;
     e.preventDefault();
 
     const { files } = document.getElementById("file") as HTMLInputElement;
     if (!files || files.length <= 0) return;
-
-    const storageRef = ref(storage, user.uid!);
-
     setLoading(true);
-    // 'file' comes from the Blob or File API
-    const uploadTask = uploadBytesResumable(storageRef, files[0] as any);
 
-    uploadTask.on(
-      "state_changed",
-      () => {},
-      () => {},
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then(async () => {
-          const url = await getDownloadURL(storageRef);
-          try {
+    // 'file' comes from the Blob or File API
+    const { uploadTask, storageRef } = uploadFile(user.uid, files[0]);
+
+    try {
+      uploadTask.on(
+        "state_changed",
+        () => {},
+        () => {},
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then(async () => {
+            const url = await getDownloadURL(storageRef);
             updatePhoto(url);
             showToast("success", `Photo uploaded successfully`);
             setUser({ ...user, photoURL: url });
             setLoading(false);
             (document.getElementById("file") as HTMLInputElement).value = "";
-          } catch (error) {
-            showToast("error", `Error uploading photo`);
-            setLoading(false);
-            console.error(error);
-          }
-        });
-      }
-    );
+          });
+        }
+      );
+    } catch (error) {
+      showToast("error", `Error uploading photo`);
+      setLoading(false);
+      console.error(error);
+    }
   };
 
   return (

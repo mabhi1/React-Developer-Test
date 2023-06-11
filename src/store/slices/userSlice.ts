@@ -1,26 +1,22 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { UserStateType } from "../../utils/types";
 
-interface User {
-  uid: string | null;
-  name: string | null;
-  email: string | null;
-  photoURL: string | null;
-}
-
-const initialState: User = {
+const initialState: UserStateType = {
   uid: null,
-  name: null,
+  displayName: null,
   email: null,
   photoURL: null,
+  followedBy: [],
+  following: [],
 };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    updateUser(state, action: PayloadAction<User>) {
+    updateUser(state, action: PayloadAction<UserStateType>) {
       state.uid = action.payload.uid;
-      state.name = action.payload.name;
+      state.displayName = action.payload.displayName;
       state.email = action.payload.email;
       state.photoURL = action.payload.photoURL;
     },

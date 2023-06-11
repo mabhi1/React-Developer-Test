@@ -1,5 +1,5 @@
-import IndividualPost from "./IndividualPost";
-import Suggestions from "./Suggestions";
+import IndividualPost from "./post/IndividualPost";
+import Suggestions from "./post/Suggestions";
 
 const Posts = () => {
   return (

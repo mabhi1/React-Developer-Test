@@ -15,6 +15,7 @@ import {
   reauthenticateWithCredential,
 } from "firebase/auth";
 import "./firebase";
+import { createUserDB, updateUser } from "./db/userDBFunctions";
 
 const auth = getAuth();
 
@@ -64,6 +65,13 @@ async function socialSignIn(provider: string) {
     socialProvider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, socialProvider);
+      const res = await createUserDB({
+        uid: auth.currentUser!.uid,
+        email: auth.currentUser!.email,
+        displayName: auth.currentUser!.displayName,
+        photoURL: auth.currentUser!.photoURL,
+      });
+      return res;
     } catch (error) {
       throw createErrorMessage(error);
     }
@@ -100,12 +108,13 @@ async function changePassword(email: string, oldPassword: string, newPassword: s
   }
 }
 
-async function updatePhoto(photoUrl: string) {
+async function updatePhoto(photoURL: string) {
   if (!auth.currentUser) return;
   try {
     await updateProfile(auth.currentUser, {
-      photoURL: photoUrl,
+      photoURL: photoURL,
     });
+    await updateUser({ uid: auth.currentUser.uid, photoURL: photoURL });
   } catch (error: any) {
     throw createErrorMessage(error);
   }
