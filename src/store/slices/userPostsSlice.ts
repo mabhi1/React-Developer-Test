@@ -9,6 +9,7 @@ const userPostsSlice = createSlice({
   reducers: {
     initializeUsersPosts(state) {
       state = [];
+      return state;
     },
     addUserPost(state, action: PayloadAction<PostType>) {
       state.map((post, index) => {
