@@ -36,7 +36,11 @@ const Suggestions = () => {
       )}
       {users.map((user) => (
         <div key={user.uid} className="flex gap-5 items-center justify-center">
-          <img src={user.photoURL} alt="profile" width="40" className="rounded-full max-h-[40px]" />
+          {user.photoURL ? (
+            <img src={user.photoURL} alt="profile" width="40" className="rounded-full max-h-[40px]" />
+          ) : (
+            <img src="/profile.png" alt="profile" width="40" className="rounded-full max-h-[40px]" />
+          )}
           <Link to={`/user?id=${user.uid}`} className="underline underline-offset-2">
             {user.displayName}
           </Link>

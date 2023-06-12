@@ -64,14 +64,21 @@ const IndividualPost = ({
   return (
     <div className="flex flex-col gap-5 shadow p-5 rounded bg-slate-100">
       <div className="flex gap-2 items-center">
-        <img src={post.uploadedBy.photoURL} alt="profile" width="40" className="rounded-full max-h-[40px]" />
+        {post.uploadedBy.photoURL ? (
+          <img src={post.uploadedBy.photoURL} alt="profile" width="40" className="rounded-full max-h-[40px]" />
+        ) : (
+          <img src="/profile.png" alt="profile" width="40" className="rounded-full max-h-[40px]" />
+        )}
         <Link
           to={`/user?id=${post.uploadedBy.userId}`}
           className="underline underline-offset-2 text-slate-500 text-sm border-r-2 border-slate-500 pr-2"
         >
           {post.uploadedBy.name}
         </Link>
-        <span className="text-sm text-slate-500 italic">{moment(post.createdAt).fromNow()}</span>
+        <span className="text-sm text-slate-500 italic border-r-2 border-slate-500 pr-2">
+          {moment(post.createdAt).fromNow()}
+        </span>
+        <span className="text-sm text-slate-500 italic">{moment(post.updatedAt).fromNow()}</span>
       </div>
       <h2 className="text-2xl">{post.title}</h2>
       <div>{post.description}</div>
@@ -118,7 +125,11 @@ const IndividualPost = ({
           </div>
         ))}
         <div className="flex gap-2">
-          <img src={photoURL} alt="profile" width="40" className="rounded-full max-h-[40px]" />
+          {photoURL ? (
+            <img src={photoURL} alt="profile" width="40" className="rounded-full max-h-[40px]" />
+          ) : (
+            <img src="/profile.png" alt="profile" width="40" className="rounded-full max-h-[40px]" />
+          )}
           <form className="relative" onSubmit={handleComments}>
             <Input
               type="text"
