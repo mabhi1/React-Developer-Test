@@ -68,7 +68,7 @@ const PublicProfile = () => {
   else if (user)
     return (
       <div className="flex flex-col gap-3 md:gap-5">
-        <div className="flex justify-between items-start">
+        <div className="flex flex-col md:flex-row gap-5 justify-between items-start">
           <div className="flex flex-col gap-3 md:gap-5">
             {user?.photoURL ? (
               <div className="w-[100px] h-[100px] rounded-full overflow-hidden flex">

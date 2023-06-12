@@ -43,7 +43,7 @@ const Header = () => {
 
   if (user.uid)
     return (
-      <div className="overflow-hidden flex sticky top-0 bg-slate-50/80 z-40 backdrop-blur justify-between py-3 px-10 items-center border-b border-slate-300">
+      <div className="flex flex-col md:flex-row gap-3 sticky top-0 bg-slate-50/80 z-40 backdrop-blur justify-between py-3 px-10 items-center border-b border-slate-300">
         <h1 className="text-lg">Socialize</h1>
         <nav className="flex gap-8 items-center">
           <div className="hidden md:flex justify-center items-center md:min-h-full">Welcome, {user.displayName}</div>
@@ -52,7 +52,7 @@ const Header = () => {
             <Link
               key={item.label}
               to={item.path}
-              className="flex h-fit relative items-center gap-1 after:content-[''] after:absolute after:bg-slate-900 dark:after:bg-slate-50 after:h-0.5 after:left-0 after:w-0 after:bottom-0 after:transition-all after:duration-300 hover:after:w-full"
+              className="flex h-fit relative items-center gap-1 after:content-[''] after:absolute after:bg-slate-900 after:h-0.5 after:left-0 after:w-0 after:bottom-0 after:transition-all after:duration-300 hover:after:w-full"
             >
               {item.icon}
               {item.label}
@@ -85,14 +85,14 @@ const Header = () => {
     );
   else
     return (
-      <div className="flex justify-between py-3 px-10 items-center border-b border-slate-300">
+      <div className="flex flex-col md:flex-row gap-3 justify-between py-3 px-10 items-center border-b border-slate-300">
         <h1 className="text-lg">Socialize</h1>
         <nav className="flex gap-8 items-center">
           {nonAuthMenuItems.map((item) => (
             <Link
               key={item.label}
               to={item.path}
-              className="flex h-fit relative items-center gap-1 after:content-[''] after:absolute after:bg-slate-900 dark:after:bg-slate-50 after:h-0.5 after:left-0 after:w-0 after:bottom-0 after:transition-all after:duration-300 hover:after:w-full"
+              className="flex h-fit relative items-center gap-1 after:content-[''] after:absolute after:bg-slate-900 after:h-0.5 after:left-0 after:w-0 after:bottom-0 after:transition-all after:duration-300 hover:after:w-full"
             >
               {item.icon}
               {item.label}

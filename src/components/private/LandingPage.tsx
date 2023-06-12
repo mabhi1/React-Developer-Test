@@ -43,7 +43,7 @@ const LandingPage = () => {
 
   if (user.uid === null || loading) return <Spinner size="lg" />;
   return (
-    <div className="flex flex-col lg:flex-row">
+    <div className="flex flex-col lg:flex-row gap-5 lg:gap-0">
       <div className="flex flex-col gap-5 lg:w-4/5">
         <div>Your Feed</div>
         <Input type="text" placeholder="Search post title" value={searchTerm} onChange={handleChange} />

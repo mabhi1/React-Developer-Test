@@ -21,6 +21,8 @@ import EditPost from "./components/private/post/EditPost";
 import PublicProfile from "./components/private/profile/PublicProfile";
 import { UserStateType } from "./utils/types";
 import { getUser } from "./firebase/db/userDBFunctions";
+import Spinner from "./ui/Spinner";
+import Footer from "./components/Footer";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -64,7 +66,10 @@ function App() {
     <Router>
       <main className="font-body bg-slate-50 min-h-screen text-slate-900 flex flex-col text-base">
         {loading ? (
-          <div>Loading...</div>
+          <div className="flex-1 flex flex-col gap-3 justify-center items-center text-xl">
+            <Spinner size="lg" />
+            Please wait...
+          </div>
         ) : (
           <>
             <Header />
@@ -87,6 +92,7 @@ function App() {
               <ConfirmBox />
               <Toast />
             </div>
+            <Footer />
           </>
         )}
       </main>

@@ -56,10 +56,10 @@ const Register = () => {
 
   return (
     <div className="flex-1 flex flex-col lg:flex-row items-center gap-5 justify-center">
-      <div className="w-1/2 lg:w-1/4 justify-center flex">
+      <div className="w-3/4 md:w-1/2 lg:w-1/4 justify-center flex">
         <img src="/login-img.webp" width={420} height={494} alt="Login" className="w-auto h-auto" />
       </div>
-      <div className="flex flex-col gap-3 md:w-1/2 lg:w-1/3 lg:p-8">
+      <div className="flex flex-col gap-3 w-full md:w-1/2 lg:w-1/3 lg:p-8">
         <h1 className="text-lg">Register</h1>
         <form className="flex flex-col gap-3" autoComplete="off" onSubmit={handleRegister}>
           <div className="relative flex-1">

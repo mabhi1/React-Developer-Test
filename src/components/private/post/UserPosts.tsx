@@ -35,25 +35,29 @@ const UserPosts = () => {
         {userPosts.length === 0 && <div className="text-center">You have created 0 posts.</div>}
         {userPosts.map((post) => (
           <div id={post.id} className="flex flex-col gap-5 shadow p-5 rounded bg-slate-100" key={post.id}>
-            <div className="flex gap-2 items-center">
-              <img src={post.uploadedBy.photoURL} alt="profile" width="40" className="rounded-full max-h-[40px]" />
-              <span className="underline underline-offset-2 text-slate-500 text-sm border-r-2 border-slate-500 pr-2">
-                {post.uploadedBy.name}
-              </span>
-              <span className="text-sm text-slate-500 border-r-2 border-slate-500 pr-2 italic">
-                Created: {moment(post.createdAt).fromNow()}
-              </span>
-              <span className="text-sm text-slate-500 italic">Updated: {moment(post.updatedAt).fromNow()}</span>
-              <Button variant="link" className="ml-auto" onClick={() => navigate(`/edit-post?id=${post.id}`)}>
-                Edit
-              </Button>
-              <Button
-                variant="link"
-                className="text-red-800 after:bg-red-800"
-                onClick={() => openConfirmBox(() => handleDelete(post.id))}
-              >
-                Delete
-              </Button>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 md:gap-0">
+              <div className="flex flex-col md:flex-row gap-2 md:items-center">
+                <img src={post.uploadedBy.photoURL} alt="profile" width="40" className="rounded-full max-h-[40px]" />
+                <span className="underline underline-offset-2 text-slate-500 text-sm md:border-r-2 border-slate-500 pr-2">
+                  {post.uploadedBy.name}
+                </span>
+                <span className="text-sm text-slate-500 md:border-r-2 border-slate-500 pr-2 italic">
+                  Created: {moment(post.createdAt).fromNow()}
+                </span>
+                <span className="text-sm text-slate-500 italic">Updated: {moment(post.updatedAt).fromNow()}</span>
+              </div>
+              <div className="flex gap-2 items-center">
+                <Button variant="link" onClick={() => navigate(`/edit-post?id=${post.id}`)}>
+                  Edit
+                </Button>
+                <Button
+                  variant="link"
+                  className="text-red-800 after:bg-red-800"
+                  onClick={() => openConfirmBox(() => handleDelete(post.id))}
+                >
+                  Delete
+                </Button>
+              </div>
             </div>
             <h2 className="text-2xl">{post.title}</h2>
             <div>
