@@ -37,7 +37,11 @@ const UserPosts = () => {
           <div id={post.id} className="flex flex-col gap-5 shadow p-5 rounded bg-slate-100" key={post.id}>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 md:gap-0">
               <div className="flex flex-col md:flex-row gap-2 md:items-center">
-                <img src={post.uploadedBy.photoURL} alt="profile" width="40" className="rounded-full max-h-[40px]" />
+                {post.uploadedBy.photoURL ? (
+                  <img src={post.uploadedBy.photoURL} alt="profile" width="40" className="rounded-full max-h-[40px]" />
+                ) : (
+                  <img src="/profile.png" alt="profile" width="40" className="rounded-full max-h-[40px]" />
+                )}
                 <span className="underline underline-offset-2 text-slate-500 text-sm md:border-r-2 border-slate-500 pr-2">
                   {post.uploadedBy.name}
                 </span>
