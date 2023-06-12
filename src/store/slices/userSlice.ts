@@ -14,6 +14,12 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    initializeUser(state) {
+      state.displayName = null;
+      state.email = null;
+      state.photoURL = null;
+      state.uid = null;
+    },
     updateUser(state, action: PayloadAction<UserStateType>) {
       state.uid = action.payload.uid;
       state.displayName = action.payload.displayName;
@@ -33,5 +39,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { updateUser, addFollowing, removeFollowing } = userSlice.actions;
+export const { updateUser, addFollowing, removeFollowing, initializeUser } = userSlice.actions;
 export default userSlice.reducer;

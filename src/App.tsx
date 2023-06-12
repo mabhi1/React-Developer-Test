@@ -5,7 +5,7 @@ import Register from "./components/public/Register";
 import { getAuth } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "./store/hooks";
-import { updateUser } from "./store/slices/userSlice";
+import { initializeUser, updateUser } from "./store/slices/userSlice";
 import PageNotFound from "./components/PageNotFound";
 import Toast from "./ui/Toast";
 import PublicRoute from "./components/routeHandlers/PublicRoutes";
@@ -14,7 +14,7 @@ import Profile from "./components/private/profile/Profile";
 import LandingPage from "./components/private/LandingPage";
 import CreatePost from "./components/private/post/CreatePost";
 import { getUserPosts } from "./firebase/db/postDBFunctions";
-import { addUserPost } from "./store/slices/userPostsSlice";
+import { addUserPost, initializeUsersPosts } from "./store/slices/userPostsSlice";
 import UserPosts from "./components/private/post/UserPosts";
 import ConfirmBox from "./ui/ConfirmBox";
 import EditPost from "./components/private/post/EditPost";
@@ -50,14 +50,8 @@ function App() {
         }
         queryUser(user);
       } else {
-        dispatch(
-          updateUser({
-            uid: null,
-            displayName: null,
-            email: null,
-            photoURL: null,
-          })
-        );
+        dispatch(initializeUser());
+        dispatch(initializeUsersPosts());
       }
       setLoading(false);
     });

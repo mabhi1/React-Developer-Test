@@ -7,6 +7,9 @@ const userPostsSlice = createSlice({
   name: "userPosts",
   initialState,
   reducers: {
+    initializeUsersPosts(state) {
+      state = [];
+    },
     addUserPost(state, action: PayloadAction<PostType>) {
       state.map((post, index) => {
         if (post.id === action.payload.id) {
@@ -36,5 +39,5 @@ const userPostsSlice = createSlice({
   },
 });
 
-export const { addUserPost, removeUserPost, removeImageFromPost } = userPostsSlice.actions;
+export const { addUserPost, removeUserPost, removeImageFromPost, initializeUsersPosts } = userPostsSlice.actions;
 export default userPostsSlice.reducer;
