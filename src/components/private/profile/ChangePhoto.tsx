@@ -5,7 +5,7 @@ import { useState } from "react";
 import { showToast } from "../../../utils/handleToast";
 import { updatePhoto } from "../../../firebase/authFunctions";
 import { UserStateType } from "../../../utils/types";
-import { uploadFile } from "../../../firebase/storageFunctions";
+import { STATE_CHANGED, uploadFile } from "../../../firebase/storageFunctions";
 
 type Props = {
   user: UserStateType;
@@ -28,7 +28,7 @@ const ChangeProfile = ({ user, setUser }: Props) => {
 
     try {
       uploadTask.on(
-        "state_changed",
+        STATE_CHANGED,
         () => {},
         () => {},
         () => {

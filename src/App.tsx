@@ -11,9 +11,8 @@ import Toast from "./ui/Toast";
 import PublicRoute from "./components/routeHandlers/PublicRoutes";
 import PrivateRoute from "./components/routeHandlers/PrivateRoutes";
 import Profile from "./components/private/profile/Profile";
-import Posts from "./components/private/LandingPage";
+import LandingPage from "./components/private/LandingPage";
 import CreatePost from "./components/private/post/CreatePost";
-import PostQueryPage from "./components/private/post/PostQueryPage";
 import { getUserPosts } from "./firebase/db/postDBFunctions";
 import { addUserPost } from "./store/slices/userPostsSlice";
 import UserPosts from "./components/private/post/UserPosts";
@@ -21,6 +20,7 @@ import ConfirmBox from "./ui/ConfirmBox";
 import EditPost from "./components/private/post/EditPost";
 import PublicProfile from "./components/private/profile/PublicProfile";
 import { UserStateType } from "./utils/types";
+import { getUser } from "./firebase/db/userDBFunctions";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -32,19 +32,32 @@ function App() {
       if (user) {
         async function queryUser(user: UserStateType) {
           const userPosts = await getUserPosts(user.uid!);
+          const userData = await getUser(user.uid!);
           userPosts.forEach((post) => dispatch(addUserPost(post)));
-          dispatch(
-            updateUser({
-              uid: user.uid,
-              displayName: user.displayName,
-              email: user.email,
-              photoURL: user.photoURL,
-            })
-          );
+          if (userData) dispatch(updateUser({ ...userData }));
+          else
+            dispatch(
+              updateUser({
+                uid: user.uid,
+                displayName: user.displayName,
+                email: user.email,
+                photoURL: user.photoURL,
+              })
+            );
           setLoading(false);
         }
         queryUser(user);
+      } else {
+        dispatch(
+          updateUser({
+            uid: null,
+            displayName: null,
+            email: null,
+            photoURL: null,
+          })
+        );
       }
+      setLoading(false);
     });
   }, []);
   return (
@@ -58,10 +71,9 @@ function App() {
             <div className="flex-1 flex flex-col p-5">
               <Routes>
                 <Route element={<PrivateRoute />}>
-                  <Route path="/" element={<Posts />} />
+                  <Route path="/" element={<LandingPage />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/create" element={<CreatePost />} />
-                  <Route path="/post" element={<PostQueryPage />} />
                   <Route path="/edit-post" element={<EditPost />} />
                   <Route path="/myposts" element={<UserPosts />} />
                   <Route path="/user" element={<PublicProfile />} />

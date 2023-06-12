@@ -16,6 +16,7 @@ import {
 } from "firebase/auth";
 import "./firebase";
 import { createUserDB, updateUser } from "./db/userDBFunctions";
+import { UserStateType } from "../utils/types";
 
 const auth = getAuth();
 
@@ -36,6 +37,8 @@ async function createUser(email: string, password: string, displayName: string) 
     if (auth.currentUser) {
       await updateProfile(auth.currentUser, { displayName: displayName });
     }
+    const res = await createUserDB(auth.currentUser as UserStateType);
+    return res;
   } catch (error) {
     throw createErrorMessage(error);
   }
@@ -64,13 +67,8 @@ async function socialSignIn(provider: string) {
   if (provider === "google") {
     socialProvider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, socialProvider);
-      const res = await createUserDB({
-        uid: auth.currentUser!.uid,
-        email: auth.currentUser!.email,
-        displayName: auth.currentUser!.displayName,
-        photoURL: auth.currentUser!.photoURL,
-      });
+      const res = await signInWithPopup(auth, socialProvider);
+      await createUserDB(auth.currentUser as UserStateType);
       return res;
     } catch (error) {
       throw createErrorMessage(error);

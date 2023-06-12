@@ -32,7 +32,7 @@ const Register = () => {
       setLoading(false);
       return;
     }
-    const email = target.email.value.trim();
+    const email = target.email.value.trim().toLowerCase();
     const password = target.password.value.trim();
     try {
       await createUser(email, password, name);

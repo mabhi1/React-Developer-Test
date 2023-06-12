@@ -1,4 +1,4 @@
-import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import { deleteObject, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 
 const STATE_CHANGED = "state_changed";
 
@@ -9,4 +9,11 @@ const uploadFile = (fileRef: string, file: File) => {
   return { uploadTask, storageRef };
 };
 
-export { uploadFile, STATE_CHANGED };
+const deleteFile = async (fileURL: string) => {
+  const storage = getStorage();
+  const fileRef = ref(storage, fileURL);
+  const res = await deleteObject(fileRef);
+  return res;
+};
+
+export { uploadFile, STATE_CHANGED, deleteFile };

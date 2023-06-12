@@ -3,19 +3,19 @@ import Button from "../../../ui/Button";
 import Input from "../../../ui/Input";
 import { v4 as uuidV4 } from "uuid";
 import { showToast } from "../../../utils/handleToast";
-import { updatePost } from "../../../firebase/db/postDBFunctions";
+import { deleteImage, updatePost } from "../../../firebase/db/postDBFunctions";
 import Spinner from "../../../ui/Spinner";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { addUserPost } from "../../../store/slices/userPostsSlice";
-import { useSearchParams } from "react-router-dom";
-import { uploadFile } from "../../../firebase/storageFunctions";
+import { addUserPost, removeImageFromPost } from "../../../store/slices/userPostsSlice";
+import { Link, useSearchParams } from "react-router-dom";
+import { STATE_CHANGED, deleteFile, uploadFile } from "../../../firebase/storageFunctions";
 import { getDownloadURL } from "firebase/storage";
 import moment from "moment";
 import { BiDislike, BiLike } from "react-icons/bi";
+import { openConfirmBox } from "../../../utils/handleConfirmBox";
 
 const EditPost = () => {
   const [loading, setLoading] = useState(true);
-  const [imageUploading, setImageUploading] = useState(false);
   const [searchParams] = useSearchParams();
   const postId: string | null = searchParams.get("id");
   const post = useAppSelector((state) => state.userPosts).find((post) => post.id === postId);
@@ -46,23 +46,31 @@ const EditPost = () => {
       showToast("info", "No change in title or description");
       return;
     }
-    e.preventDefault();
+    setLoading(true);
+    try {
+      await updatePost({ id: post!.id, title: title.trim(), description: description.trim() });
+      dispatch(addUserPost({ ...post!, title, description, updatedAt: Date.now() }));
+      showToast("success", "Changes saved");
+    } catch (error) {
+      showToast("error", "Error Saving changes");
+    }
+    setLoading(false);
   };
 
   const handleUpload = () => {
     const imageId = uuidV4();
-    if (imageUploading) return;
+    if (loading) return;
 
     const { files } = document.getElementById("file") as HTMLInputElement;
     if (!files || files.length <= 0) return;
-    setImageUploading(true);
+    setLoading(true);
 
     // 'file' comes from the Blob or File API
     const { uploadTask, storageRef } = uploadFile(imageId, files[0]);
 
     try {
       uploadTask.on(
-        "state_changed",
+        STATE_CHANGED,
         () => {},
         () => {},
         () => {
@@ -73,19 +81,32 @@ const EditPost = () => {
             showToast("success", `Image uploaded successfully`);
             const newImageList = [...post!.images, url];
             dispatch(addUserPost({ ...post!, images: newImageList, updatedAt: Date.now() }));
-            setImageUploading(false);
+            setLoading(false);
             (document.getElementById("file") as HTMLInputElement).value = "";
           });
         }
       );
     } catch (error) {
       showToast("error", `Error uploading Image`);
-      setImageUploading(false);
+      setLoading(false);
       console.error(error);
     }
   };
 
-  if (!post) return <Spinner size="lg" />;
+  const handleDelete = async (image: string) => {
+    setLoading(true);
+    try {
+      await deleteFile(image);
+      await deleteImage(image, post!.id);
+      dispatch(removeImageFromPost({ postId: post!.id, imageURL: image }));
+    } catch (e) {
+      showToast("error", "Error removing image");
+    }
+    setLoading(false);
+    showToast("success", "Image remove");
+  };
+
+  if (!post || loading) return <Spinner size="lg" />;
   else
     return (
       <div className="lg:w-3/4 flex flex-col gap-5">
@@ -118,20 +139,24 @@ const EditPost = () => {
           ></textarea>
           <div className="flex">
             <Input wide={"lg"} type="file" id="file" name="file" className="w-full p-0 border-0" accept="image/*" />
-            {imageUploading ? (
-              <Button variant={"disabled"} disabled>
-                <span className="hidden md:inline mr-1">Please </span>Wait...
-              </Button>
-            ) : (
-              <Button type="button" onClick={handleUpload}>
-                Upload
-              </Button>
-            )}
+
+            <Button type="button" onClick={handleUpload}>
+              Upload
+            </Button>
           </div>
           <div className="flex flex-wrap gap-5">
             {post?.images.map((image) => (
-              <div key={image}>
+              <div key={image} className="relative h-40 min-w-[10rem] w-auto bg-slate-200">
                 <img src={image} className="max-h-40 w-auto" />
+
+                <Button
+                  type="button"
+                  variant="outline3"
+                  className="absolute top-0 right-0"
+                  onClick={() => openConfirmBox(() => handleDelete(image))}
+                >
+                  Remove
+                </Button>
               </div>
             ))}
           </div>
@@ -149,7 +174,9 @@ const EditPost = () => {
             <h3>Comments : {post?.comments.length === 0 ? "This Post has 0 Comments" : post?.comments.length}</h3>
             {post?.comments.map((comment) => (
               <div className="flex gap-2">
-                <img src={comment.photoURL} alt="profile" width="40" className="max-h-[40px]" />
+                <Link to={`/user?id=${comment.userId}`}>
+                  <img src={comment.photoURL} alt="profile" width="40" className="max-h-[40px] rounded-full" />
+                </Link>
                 <div className="flex flex-col">
                   <p>{comment.comment}</p>
                   <span className="text-sm text-slate-500 italic">{comment.createdAt}</span>
@@ -158,15 +185,9 @@ const EditPost = () => {
             ))}
           </div>
           <div className="flex gap-5 w-full md:w-80 md:justify-start">
-            {loading ? (
-              <Button size="md" className="flex-1" variant="disabled" disabled>
-                <Spinner size="sm" />
-              </Button>
-            ) : (
-              <Button size="md" className="flex-1">
-                Save
-              </Button>
-            )}
+            <Button size="md" className="flex-1">
+              Save
+            </Button>
 
             <Button size="md" variant="destructive" type="reset" className="flex-1" onClick={handleReset}>
               Reset

@@ -19,9 +19,19 @@ const userSlice = createSlice({
       state.displayName = action.payload.displayName;
       state.email = action.payload.email;
       state.photoURL = action.payload.photoURL;
+      state.followedBy = action.payload.followedBy || [];
+      state.following = action.payload.following || [];
+    },
+    addFollowing(state, action: PayloadAction<string>) {
+      const newFollowingList = [...state.following!.filter((id) => id !== action.payload), action.payload];
+      state.following = newFollowingList;
+    },
+    removeFollowing(state, action: PayloadAction<string>) {
+      const newFollowingList = [...state.following!.filter((id) => id !== action.payload)];
+      state.following = newFollowingList;
     },
   },
 });
 
-export const { updateUser } = userSlice.actions;
+export const { updateUser, addFollowing, removeFollowing } = userSlice.actions;
 export default userSlice.reducer;

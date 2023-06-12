@@ -1,4 +1,15 @@
-import { doc, getDoc, getFirestore, setDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  orderBy,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { UserStateType, createdDBUserType } from "../../utils/types";
 
 const createUserDB = async (user: UserStateType) => {
@@ -51,15 +62,87 @@ const updateUser = async ({
     });
     return true;
   } catch (error) {
-    return false;
+    throw new Error();
   }
 };
 
 const getUser = async (uid: string) => {
   const db = getFirestore();
-  const user = await getDoc(doc(db, "users", uid));
-  if (user.exists()) return { ...user.data() } as createdDBUserType;
-  else return null;
+  try {
+    const user = await getDoc(doc(db, "users", uid));
+    if (user.exists()) return { ...user.data() } as createdDBUserType;
+    else return null;
+  } catch (error) {
+    throw new Error();
+  }
 };
 
-export { createUserDB, updateUser, getUser };
+const followUser = async (userId: string, followerId: string) => {
+  const db = getFirestore();
+  const user = await getDoc(doc(db, "users", userId));
+  const follower = await getDoc(doc(db, "users", followerId));
+  if (!user.exists() || !follower.exists()) throw new Error();
+
+  let newFollowedByList: string[] = [...user.data().followedBy, followerId];
+  let newFollowingList: string[] = [...follower.data().following, userId];
+
+  const editedUser = doc(db, "users", userId);
+  const editedFollower = doc(db, "users", followerId);
+
+  try {
+    await updateDoc(editedUser, {
+      ...user.data(),
+      followedBy: newFollowedByList,
+    });
+    await updateDoc(editedFollower, {
+      ...follower.data(),
+      following: newFollowingList,
+    });
+    return true;
+  } catch (error) {
+    throw new Error();
+  }
+};
+
+const unfollowUser = async (userId: string, followerId: string) => {
+  const db = getFirestore();
+  const user = await getDoc(doc(db, "users", userId));
+  const follower = await getDoc(doc(db, "users", followerId));
+  if (!user.exists() || !follower.exists()) throw new Error();
+
+  let newFollowedByList: string[] = user.data().followedBy.filter((follower: string) => follower !== followerId);
+  let newFollowingList: string[] = follower.data().following.filter((follow: string) => follow !== userId);
+
+  const editedUser = doc(db, "users", userId);
+  const editedFollower = doc(db, "users", followerId);
+
+  try {
+    await updateDoc(editedUser, {
+      ...user.data(),
+      followedBy: newFollowedByList,
+    });
+    await updateDoc(editedFollower, {
+      ...follower.data(),
+      following: newFollowingList,
+    });
+    return true;
+  } catch (error) {
+    throw new Error();
+  }
+};
+
+const getUsersByQuery = async (term: string) => {
+  const db = getFirestore();
+  const users: createdDBUserType[] = [];
+  const userQuery = query(collection(db, "users"), where("email", "==", term), orderBy("createdAt", "desc"));
+  const usersData = await getDocs(userQuery);
+  usersData.forEach((doc) => {
+    if (doc.exists()) {
+      const eachUser = { ...doc.data() } as createdDBUserType;
+      users.push({ ...eachUser });
+    }
+  });
+  return users;
+};
+
+export { createUserDB, updateUser, getUser, followUser, unfollowUser, getUsersByQuery };

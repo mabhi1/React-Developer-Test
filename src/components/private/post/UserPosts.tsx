@@ -8,7 +8,7 @@ import Spinner from "../../../ui/Spinner";
 import { removeUserPost } from "../../../store/slices/userPostsSlice";
 import { openConfirmBox } from "../../../utils/handleConfirmBox";
 import { showToast } from "../../../utils/handleToast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const UserPosts = () => {
   const userPosts = useAppSelector((state) => state.userPosts);
@@ -82,10 +82,12 @@ const UserPosts = () => {
               <h3>Comments : {post.comments.length === 0 && "This Post has 0 Comments"}</h3>
               {post.comments.map((comment) => (
                 <div className="flex gap-2">
-                  <img src={comment.photoURL} alt="profile" width="40" className="max-h-[40px]" />
+                  <Link to={`/user?id=${comment.userId}`}>
+                    <img src={comment.photoURL} alt="profile" width="40" className="rounded-full max-h-[40px]" />
+                  </Link>
                   <div className="flex flex-col">
                     <p>{comment.comment}</p>
-                    <span className="text-sm text-slate-500 italic">{comment.createdAt}</span>
+                    <span className="text-sm text-slate-500 italic">{moment(comment.createdAt).fromNow()}</span>
                   </div>
                 </div>
               ))}

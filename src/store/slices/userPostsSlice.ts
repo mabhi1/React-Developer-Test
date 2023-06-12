@@ -24,8 +24,17 @@ const userPostsSlice = createSlice({
         }
       });
     },
+    removeImageFromPost(state, action: PayloadAction<{ postId: string; imageURL: string }>) {
+      state = state.map((post) => {
+        if (post.id === action.payload.postId) {
+          post.images = post.images.filter((image) => image !== action.payload.imageURL);
+          post.updatedAt = Date.now();
+        }
+        return post;
+      });
+    },
   },
 });
 
-export const { addUserPost, removeUserPost } = userPostsSlice.actions;
+export const { addUserPost, removeUserPost, removeImageFromPost } = userPostsSlice.actions;
 export default userPostsSlice.reducer;
