@@ -91,7 +91,11 @@ const UserPosts = () => {
               {post.comments.map((comment) => (
                 <div className="flex gap-2">
                   <Link to={`/user?id=${comment.userId}`}>
-                    <img src={comment.photoURL} alt="profile" width="40" className="rounded-full max-h-[40px]" />
+                    {comment.photoURL ? (
+                      <img src={comment.photoURL} alt="profile" width="40" className="rounded-full max-h-[40px]" />
+                    ) : (
+                      <img src="/profile.png" alt="profile" width="40" className="rounded-full max-h-[40px]" />
+                    )}
                   </Link>
                   <div className="flex flex-col">
                     <p>{comment.comment}</p>
